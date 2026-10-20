@@ -55,7 +55,7 @@ export default function Nearby({ ghosts, feed, setFeed, onOpen, onBefriend, onFi
             </div>
           );
         })}
-        <div className="me" aria-label="You">🧑</div>
+        <div className="radar-me" aria-label="You">🧑</div>
         {inRange.map((g) => (
           <button
             key={g.id}

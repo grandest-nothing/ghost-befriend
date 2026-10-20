@@ -9,7 +9,7 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 .ring-line { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border: 1px dashed #1f5a49; border-radius: 50%; pointer-events: none; }
 .ring-line span { position: absolute; top: -1px; left: 50%; transform: translate(-50%, -50%); font-size: .62rem; color: #4fd1a5; background: #031510; padding: 0 4px; }
-.me { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: #19d9ff; display: grid; place-items: center; font-size: 1.3rem; box-shadow: 0 0 0 8px #19d9ff33, 0 0 20px #19d9ff; z-index: 2; }
+.radar-me { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: #19d9ff; display: grid; place-items: center; font-size: 1.3rem; box-shadow: 0 0 0 8px #19d9ff33, 0 0 20px #19d9ff; z-index: 2; }
 .blip { position: absolute; transform: translate(-50%, -50%); width: 42px; height: 42px; border-radius: 50%; background: #0b1512dd; border: 2px solid #34d399; padding: 3px; display: grid; place-items: center; animation: blip 2.4s ease-in-out infinite; z-index: 3; }
 .blip.risk { border-color: #f87171; }
 .blip.on { animation: none; border-color: #fff; box-shadow: 0 0 0 4px #ffffff33; z-index: 4; transform: translate(-50%, -50%) scale(1.25); }
