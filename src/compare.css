@@ -1,0 +1,29 @@
+.cmp { padding-bottom: 28px; }
+.cmp-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.cmp-slot { position: relative; aspect-ratio: 3 / 4; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; text-align: center; border: 1px solid var(--line); }
+.cmp-slot.filled .pic:not(.emoji) { width: 78%; aspect-ratio: 1; object-fit: contain; }
+.cmp-slot.filled .pic.emoji { font-size: 2.6rem; }
+.cmp-slot.filled b { font-size: .8rem; line-height: 1.1; }
+.cmp-slot .x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; background: #000a; font-size: .7rem; }
+.cmp-slot.empty { background: #101013; border: 2px dashed #3a3a44; color: var(--muted); }
+.cmp-slot.empty span { font-size: 2rem; line-height: 1; }
+.cmp-slot.empty small { font-size: .75rem; }
+.cmp-hint { text-align: center; margin-top: 16px; }
+.cmp-pick { margin: 16px 0 4px; padding: 10px 14px; border-radius: 14px; background: #1b1830; border: 1px solid #3b3566; font-size: .9rem; text-align: center; }
+.cmp-table { margin-top: 6px; }
+.cmp-row { margin-top: 12px; }
+.cmp-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.cmp-cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+.cmp-cell { background: #17171b; border-radius: 12px; padding: 10px 4px; text-align: center; font-size: .9rem; text-transform: capitalize; min-height: 40px; }
+.cmp-cell.win { background: #0f3b2a; border: 1px solid #1f6f52; color: #34d399; font-weight: 700; }
+.cmp-cell.blank { background: transparent; }
+.picker { max-height: 85%; }
+.pk-head { display: flex; justify-content: space-between; align-items: center; }
+.pk-list { display: grid; gap: 6px; overflow-y: auto; min-height: 0; flex: 1; padding-bottom: 4px; }
+.pk-row { display: flex; align-items: center; gap: 10px; text-align: left; padding: 8px 10px; border-radius: 14px; background: #1d1b24; border: 1px solid transparent; }
+.pk-row.on { border-color: var(--pink); background: #2a1730; }
+.pk-row:disabled { opacity: .35; }
+.pk-row .pic:not(.emoji) { width: 40px; height: 40px; object-fit: contain; }
+.pk-row small { display: block; color: var(--muted); font-size: .72rem; text-transform: capitalize; }
+.pk-row .star { color: #f4f06b; }
+.pk-row .tick { width: 20px; text-align: center; color: var(--pink); font-weight: 700; }

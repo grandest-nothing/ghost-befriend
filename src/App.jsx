@@ -4,7 +4,8 @@ import { usePokemon } from "./pokemon.js";
 import { SORTS, REPLIES, greeting, isBeginner, isHighRisk } from "./lib.js";
 import Discover, { Details } from "./components/Discover.jsx";
 import Nearby from "./components/Nearby.jsx";
-import { Welcome, GhostGrid, Messages, Chat, ComparePage, MatchOverlay, Approval, FilterSheet } from "./components/Screens.jsx";
+import Compare from "./components/Compare.jsx";
+import { Welcome, GhostGrid, Messages, Chat, MatchOverlay, Approval, FilterSheet } from "./components/Screens.jsx";
 
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 function usePersist(key, init) {
@@ -109,7 +110,7 @@ export default function App() {
   else if (tab === "saved")
     screen = <GhostGrid title="Shortlist" ghosts={shortlist.map(byId)} onOpen={openDetail} onLeft={(g) => toggle(setShortlist, g.id)} onRight={openDetail} leftIcon="✕" rightIcon="👁" empty="Nothing shortlisted yet. Tap the heart on a card." />;
   else if (tab === "messages") screen = <Messages friends={friends} chats={chats} unread={unread} onOpen={openChat} />;
-  else screen = <ComparePage ghosts={ghosts} compare={compare} toggle={(id) => toggle(setCompare, id, 3)} />;
+  else screen = <Compare ghosts={ghosts} compare={compare} shortlist={shortlist} toggle={(id) => toggle(setCompare, id, 3)} onClear={() => setCompare([])} />;
 
   return (
     <div className="phone">

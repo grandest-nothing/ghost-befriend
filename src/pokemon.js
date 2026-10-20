@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { GHOSTS } from "./data/ghosts.js";
 
-// Pokemon: PokeAPI (name, types, official artwork).
+// Pokemon: PokeAPI (types + official artwork). Names stay as written in src/data/ghosts.js, because the API
+// returns form names such as "aegislash-shield" or "mimikyu-disguised".
 // Digimon: artwork from Digi-API, served same-origin via /digi-img (see vercel.json / vite.config.js)
-// so Pic.jsx can remove the white background. Digimon names/types come from src/data/ghosts.js.
+// so Pic.jsx can remove the white background.
 const POKE_API = "https://pokeapi.co/api/v2/pokemon/";
 const POKE_ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 const KEY = "gb.creatures.v3";
@@ -17,7 +18,7 @@ async function fetchPokemon(g) {
   const r = await fetch(POKE_API + g.key);
   if (!r.ok) return null;
   const d = await r.json();
-  const entry = { name: cap(d.name), elements: d.types.map((t) => cap(t.type.name)) };
+  const entry = { elements: d.types.map((t) => cap(t.type.name)) };
   const img = d.sprites?.other?.["official-artwork"]?.front_default || d.sprites?.front_default;
   if (img) entry.image = img;
   return entry;
@@ -46,11 +47,11 @@ export function usePokemon() {
 
   return useMemo(
     () =>
-      GHOSTS.map((g) =>
-        g.source === "digimon"
-          ? { ...g, image: digimonImage(g) }
-          : { ...g, image: `${POKE_ART}${g.key}.png`, ...cache[cacheKey(g)] }
-      ),
+      GHOSTS.map((g) => {
+        if (g.source === "digimon") return { ...g, image: digimonImage(g) };
+        const { elements, image } = cache[cacheKey(g)] || {};
+        return { ...g, image: image || `${POKE_ART}${g.key}.png`, elements: elements || g.elements };
+      }),
     [cache]
   );
 }
