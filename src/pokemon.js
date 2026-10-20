@@ -1,29 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { GHOSTS } from "./data/ghosts.js";
 
-// Pokemon: PokeAPI (name, types, official artwork). Digimon: Digi-API (name, artwork).
+// Pokemon: PokeAPI (name, types, official artwork).
+// Digimon: artwork from Digi-API, served same-origin via /digi-img (see vercel.json / vite.config.js)
+// so Pic.jsx can remove the white background. Digimon names/types come from src/data/ghosts.js.
 const POKE_API = "https://pokeapi.co/api/v2/pokemon/";
 const POKE_ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
-const DIGI_API = "https://digi-api.com/api/v1/digimon/";
-const DIGI_ART = "https://digi-api.com/images/digimon/w/";
-const KEY = "gb.creatures.v2";
+const KEY = "gb.creatures.v3";
 
 const cap = (s) => s.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) ?? {}; } catch { return {}; } };
 const cacheKey = (g) => `${g.source}:${g.key}`;
-const fallbackImage = (g) => (g.source === "digimon" ? `${DIGI_ART}${encodeURIComponent(g.key)}.png` : `${POKE_ART}${g.key}.png`);
+const digimonImage = (g) => `/digi-img/${encodeURIComponent(g.key)}.png`;
 
-async function fetchEntry(g) {
-  if (g.source === "digimon") {
-    const r = await fetch(DIGI_API + encodeURIComponent(g.key.toLowerCase()));
-    if (!r.ok) return null;
-    const d = await r.json();
-    const entry = {};
-    if (d.name) entry.name = d.name;
-    const img = d.images?.[0]?.href;
-    if (img) entry.image = img;
-    return entry;
-  }
+async function fetchPokemon(g) {
   const r = await fetch(POKE_API + g.key);
   if (!r.ok) return null;
   const d = await r.json();
@@ -33,15 +23,15 @@ async function fetchEntry(g) {
   return entry;
 }
 
-// Fetches each creature once and caches it in localStorage (keeps API traffic low, per the APIs' fair-use guidance).
+// Fetches each Pokemon once and caches it in localStorage (keeps API traffic low, per PokeAPI's fair-use policy).
 export function usePokemon() {
   const [cache, setCache] = useState(load);
 
   useEffect(() => {
     let off = false;
-    GHOSTS.filter((g) => !cache[cacheKey(g)]).forEach(async (g) => {
+    GHOSTS.filter((g) => g.source === "pokemon" && !cache[cacheKey(g)]).forEach(async (g) => {
       try {
-        const entry = await fetchEntry(g);
+        const entry = await fetchPokemon(g);
         if (!entry || off) return;
         setCache((c) => {
           const next = { ...c, [cacheKey(g)]: entry };
@@ -54,5 +44,13 @@ export function usePokemon() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return useMemo(() => GHOSTS.map((g) => ({ ...g, image: fallbackImage(g), ...cache[cacheKey(g)] })), [cache]);
+  return useMemo(
+    () =>
+      GHOSTS.map((g) =>
+        g.source === "digimon"
+          ? { ...g, image: digimonImage(g) }
+          : { ...g, image: `${POKE_ART}${g.key}.png`, ...cache[cacheKey(g)] }
+      ),
+    [cache]
+  );
 }

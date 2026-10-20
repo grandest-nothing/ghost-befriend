@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/digi-img/:path*", "destination": "https://digi-api.com/images/digimon/w/:path*" }
+  ]
+}

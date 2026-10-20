@@ -99,9 +99,11 @@ export default function Discover({ queue, feed, setFeed, canUndo, onUndo, onFilt
 
 export function Details({ g, shortlisted, comparing, befriended, onShortlist, onCompare, onIgnore, onBefriend, onClose }) {
   const archive = [[<Pic key="p" g={g} />, "First sighting"], ["🌙", `Last seen · ${g.location}`], ["🕯️", `${g.haunting}`]];
+  // backgroundImage + backgroundColor (not the `background` shorthand) keeps a solid dark base under the gradient,
+  // so the screen underneath can never show through.
   return (
-    <div className="details" style={{ background: GRAD(g) }}>
-      <div className="hero faded"><Pic g={g} /></div>
+    <div className="details" style={{ backgroundImage: GRAD(g), backgroundColor: "#0b0710" }}>
+      <div className="hero faded" style={{ opacity: 0.16 }}><Pic g={g} /></div>
       <div className="topbar">
         <button className="circle" onClick={onClose} aria-label="Back">‹</button>
         <div className="seg"><button className="on">DETAILS</button></div>
@@ -131,7 +133,7 @@ export function Details({ g, shortlisted, comparing, befriended, onShortlist, on
         </div>
         <h3>Archive</h3>
         <div className="archive">
-          {archive.map(([e, t]) => <div key={t} className="tile" style={{ background: GRAD(g) }}><span>{e}</span><small>{t}</small></div>)}
+          {archive.map(([e, t]) => <div key={t} className="tile" style={{ backgroundImage: GRAD(g), backgroundColor: "#0b0710" }}><span>{e}</span><small>{t}</small></div>)}
         </div>
       </div>
       <div className="bar">
