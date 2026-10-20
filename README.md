@@ -1,4 +1,6 @@
-# 👻 Ghost Befriend
+<h3 align="center">
+  <a href="https://useless-piano.vercel.app">👻 Ghost Befriend</a>
+</h3>
 
 A Tinder-style swipe app for choosing which ghost to befriend. Built for study purposes with **Vite + React** (no extra runtime dependencies). The UI follows a dark dating-app Figma concept: full-bleed swipe cards, a Matches grid, a "bonded" pop-up, Messages and a welcome screen.
 
