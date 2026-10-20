@@ -3,6 +3,7 @@ import { LOCATIONS } from "./data/ghosts.js";
 import { usePokemon } from "./pokemon.js";
 import { SORTS, REPLIES, greeting, isBeginner, isHighRisk } from "./lib.js";
 import Discover, { Details } from "./components/Discover.jsx";
+import Nearby from "./components/Nearby.jsx";
 import { Welcome, GhostGrid, Messages, Chat, ComparePage, MatchOverlay, Approval, FilterSheet } from "./components/Screens.jsx";
 
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
@@ -41,6 +42,7 @@ export default function App() {
   const detail = detailId ? byId(detailId) : null;
   const match = matchId ? byId(matchId) : null;
 
+  // FOR YOU deck: filtered, sorted, beginner-first. NEARBY radar uses the same filtered pool, sorted by distance.
   const queue = useMemo(() => {
     let list = ghosts.filter((g) =>
       !decisions[g.id] && (filters.fear === "all" || g.fear === filters.fear) && g.friendliness >= filters.minFriend && (filters.location === "all" || g.location === filters.location)
@@ -58,7 +60,7 @@ export default function App() {
 
   const mark = (id, d) => { setDecisions((p) => ({ ...p, [id]: d })); setHistory((h) => [...h, id]); };
   const ignore = (g) => { mark(g.id, "ignore"); setDetailId(null); };
-  // Every successful befriend (swipe, button, details, or after approval) opens the congrats pop-up.
+  // Every successful befriend (swipe, button, details, radar, or after approval) opens the congrats pop-up.
   const befriend = (g) => {
     mark(g.id, "befriend");
     setChats((c) => ({ ...c, [g.id]: [{ from: "ghost", text: greeting(g), ts: Date.now() }] }));
@@ -95,6 +97,8 @@ export default function App() {
   const openDetail = (g) => setDetailId(g.id);
   let screen;
   if (chatId) screen = <Chat g={byId(chatId)} msgs={chats[chatId] || []} onSend={(t) => send(chatId, t)} onBack={() => setChatId(null)} />;
+  else if (tab === "home" && feed === "nearby")
+    screen = <Nearby ghosts={queue} feed={feed} setFeed={setFeed} onOpen={openDetail} onBefriend={requestBefriend} onFilter={() => setFilterOpen(true)} filtersActive={filtersActive} />;
   else if (tab === "home")
     screen = (
       <Discover queue={queue} feed={feed} setFeed={setFeed} canUndo={history.length > 0} onUndo={undo} onFilter={() => setFilterOpen(true)} filtersActive={filtersActive}
