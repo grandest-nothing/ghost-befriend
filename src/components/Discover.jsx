@@ -85,7 +85,6 @@ export default function Discover({ queue, feed, setFeed, canUndo, onUndo, onFilt
           </div>
           <button className={`circle ${filtersActive ? "dot" : ""}`} onClick={onFilter} aria-label="Filters">⚙</button>
         </div>
-        {g && <div className="progress">{Array.from({ length: Math.min(queue.length, 4) }).map((_, i) => <i key={i} className={i === 0 ? "on" : ""} />)}</div>}
         {g && <div className="notes">{notes.map((n) => <span key={n.text} className={`note ${n.cls}`}>{n.text}</span>)}</div>}
       </div>
       <div className="bar">

@@ -80,3 +80,6 @@
 .phone .page { padding-bottom: 108px; }
 .phone .nearby { padding-bottom: 112px; }
 .phone .stage { padding-bottom: 84px; }
+
+/* notice pills sit right under the top bar now that the progress lines are gone */
+.phone .notes { top: 66px; }
