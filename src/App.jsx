@@ -6,8 +6,9 @@ import { SORTS, REPLIES, greeting, isBeginner, isHighRisk } from "./lib.js";
 import Discover, { Details } from "./components/Discover.jsx";
 import Nearby from "./components/Nearby.jsx";
 import Compare from "./components/Compare.jsx";
+import ApprovalSheet from "./components/ApprovalSheet.jsx";
 import { Icon } from "./components/TabIcons.jsx";
-import { Welcome, GhostGrid, Messages, Chat, MatchOverlay, Approval, FilterSheet } from "./components/Screens.jsx";
+import { Welcome, GhostGrid, Messages, Chat, MatchOverlay, FilterSheet } from "./components/Screens.jsx";
 
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 function usePersist(key, init) {
@@ -135,7 +136,7 @@ export default function App() {
           onShortlist={() => toggle(setShortlist, detail.id)} onCompare={() => toggle(setCompare, detail.id, 3)} onIgnore={() => ignore(detail)} onBefriend={() => requestBefriend(detail)} onClose={() => setDetailId(null)} />
       )}
       {filterOpen && <FilterSheet filters={filters} setFilters={setFilters} locations={LOCATIONS} onClose={() => setFilterOpen(false)} />}
-      {approval && <Approval g={approval} onCancel={() => setApproval(null)} onApprove={() => befriend(approval)} />}
+      {approval && <ApprovalSheet g={approval} onCancel={() => setApproval(null)} onApprove={() => befriend(approval)} />}
       {match && <MatchOverlay g={match} onKeep={() => { setMatchId(null); setTab("home"); }} onMatches={() => { setMatchId(null); setTab("friends"); }} onChat={() => openChat(match.id)} />}
     </div>
   );

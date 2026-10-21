@@ -1,0 +1,8 @@
+.sheet.ap { align-items: stretch; text-align: center; padding-bottom: 14px; }
+.ap-head { display: flex; align-items: center; justify-content: center; gap: 14px; text-align: left; }
+.ap-head h2 { font-size: 1.7rem; }
+.ap-pic:not(.emoji) { width: 84px; height: 84px; object-fit: contain; }
+.ap-pic.emoji { font-size: 3.4rem; }
+.ap-tag { color: var(--bad); font-size: .75rem; letter-spacing: .1em; font-weight: 700; }
+.ap-list { list-style: none; margin: 0; padding: 12px 14px; display: grid; gap: 6px; text-align: left; font-size: .92rem; background: #1f1c27; border-radius: 16px; }
+.ap-list b { text-transform: capitalize; }
