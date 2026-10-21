@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { GRAD, dots, label, isBeginner, isHighRisk } from "../lib.js";
+import { GRAD, dots, label, isBeginner, isHighRisk, chancePct, chanceTier } from "../lib.js";
 import Pic from "./Pic.jsx";
 
 export function Chips({ g }) {
@@ -8,6 +8,7 @@ export function Chips({ g }) {
       <span className="chip">📍 {g.distance} km</span>
       <span className="chip">💜 {g.friendliness}%</span>
       <span className="chip">🔗 {dots(g.difficulty)}</span>
+      <span className={`chip chance ${chanceTier(g)}`}>🍀 {chancePct(g)}% bond chance</span>
     </div>
   );
 }
@@ -56,7 +57,7 @@ function SwipeCard({ g, leaving, trigger, onOpen, shortlisted, onShortlist }) {
   );
 }
 
-export default function Discover({ queue, feed, setFeed, canUndo, onUndo, onFilter, filtersActive, onSwipe, onOpen, shortlist, onShortlist, notes, onReset }) {
+export default function Discover({ queue, feed, setFeed, canUndo, onUndo, onFilter, filtersActive, onSwipe, onOpen, shortlist, onShortlist, notes, onReset, fledCount, onRetryFled }) {
   const [leaving, setLeaving] = useState(0);
   const g = queue[0];
   const trigger = (dir) => {
@@ -74,6 +75,9 @@ export default function Discover({ queue, feed, setFeed, canUndo, onUndo, onFilt
             <div className="hero small">🌙</div>
             <h2>No more ghosts here</h2>
             <p className="muted">Change your filters or start over.</p>
+            {fledCount > 0 && (
+              <button className="btn" onClick={onRetryFled}>🍀 Lure back {fledCount} ghost{fledCount > 1 ? "s" : ""} that ran away</button>
+            )}
             <button className="cta" onClick={onReset}>RESET EVERYTHING</button>
           </div>
         )}

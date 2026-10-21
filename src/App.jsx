@@ -2,11 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./glass.css";
 import { LOCATIONS } from "./data/ghosts.js";
 import { usePokemon } from "./pokemon.js";
-import { SORTS, REPLIES, greeting, isBeginner, isHighRisk } from "./lib.js";
+import { SORTS, REPLIES, greeting, isBeginner, isHighRisk, bondChance } from "./lib.js";
 import Discover, { Details } from "./components/Discover.jsx";
 import Nearby from "./components/Nearby.jsx";
 import Compare from "./components/Compare.jsx";
 import ApprovalSheet from "./components/ApprovalSheet.jsx";
+import FledOverlay from "./components/FledOverlay.jsx";
 import { Icon } from "./components/TabIcons.jsx";
 import { Welcome, GhostGrid, Messages, Chat, MatchOverlay, FilterSheet } from "./components/Screens.jsx";
 
@@ -35,16 +36,19 @@ export default function App() {
   const [detailId, setDetailId] = useState(null);
   const [approval, setApproval] = useState(null);
   const [matchId, setMatchId] = useState(null);
+  const [fledId, setFledId] = useState(null);
   const [chatId, setChatId] = useState(null);
   const chatRef = useRef(null);
   useEffect(() => { chatRef.current = chatId; }, [chatId]);
 
   const byId = (id) => ghosts.find((g) => g.id === id);
   const friends = Object.keys(decisions).filter((k) => decisions[k] === "befriend").map(Number).map(byId);
+  const fledCount = Object.values(decisions).filter((v) => v === "fled").length;
   const firstTime = friends.length === 0;
   const filtersActive = filters.fear !== "all" || filters.minFriend > 0 || filters.location !== "all";
   const detail = detailId ? byId(detailId) : null;
   const match = matchId ? byId(matchId) : null;
+  const fled = fledId ? byId(fledId) : null;
 
   // FOR YOU deck: filtered, sorted, beginner-first. NEARBY radar uses the same filtered pool, sorted by distance.
   const queue = useMemo(() => {
@@ -64,17 +68,25 @@ export default function App() {
 
   const mark = (id, d) => { setDecisions((p) => ({ ...p, [id]: d })); setHistory((h) => [...h, id]); };
   const ignore = (g) => { mark(g.id, "ignore"); setDetailId(null); };
-  // Every successful befriend (swipe, button, details, radar, or after approval) opens the congrats pop-up.
+  // Bond succeeded: opens the congrats pop-up.
   const befriend = (g) => {
     mark(g.id, "befriend");
     setChats((c) => ({ ...c, [g.id]: [{ from: "ghost", text: greeting(g), ts: Date.now() }] }));
     setUnread((u) => ({ ...u, [g.id]: 1 }));
     setDetailId(null); setApproval(null); setMatchId(g.id);
   };
+  // Bond failed: the ghost runs away. Not added to the undo history, so Undo cannot re-roll it.
+  const runAway = (g) => {
+    setDecisions((p) => ({ ...p, [g.id]: "fled" }));
+    setDetailId(null); setApproval(null); setFledId(g.id);
+  };
+  // Luck decides: every bond attempt rolls against the ghost's bond chance.
+  const tryBond = (g) => (Math.random() < bondChance(g) ? befriend(g) : runAway(g));
   const requestBefriend = (g) => {
     if (decisions[g.id] === "befriend") return;
-    if (isHighRisk(g)) setApproval(g); else befriend(g);
+    if (isHighRisk(g)) setApproval(g); else tryBond(g);
   };
+  const retryFled = () => setDecisions((p) => Object.fromEntries(Object.entries(p).filter(([, v]) => v !== "fled")));
   const release = (g) => setDecisions((p) => ({ ...p, [g.id]: "ignore" }));
   const undo = () => {
     const id = history[history.length - 1];
@@ -106,7 +118,8 @@ export default function App() {
   else if (tab === "home")
     screen = (
       <Discover queue={queue} feed={feed} setFeed={setFeed} canUndo={history.length > 0} onUndo={undo} onFilter={() => setFilterOpen(true)} filtersActive={filtersActive}
-        onSwipe={(dir, g) => (dir === "left" ? ignore(g) : requestBefriend(g))} onOpen={openDetail} shortlist={shortlist} onShortlist={(id) => toggle(setShortlist, id)} notes={notes} onReset={resetAll} />
+        onSwipe={(dir, g) => (dir === "left" ? ignore(g) : requestBefriend(g))} onOpen={openDetail} shortlist={shortlist} onShortlist={(id) => toggle(setShortlist, id)} notes={notes} onReset={resetAll}
+        fledCount={fledCount} onRetryFled={retryFled} />
     );
   else if (tab === "friends")
     screen = <GhostGrid title="Matches" ghosts={friends} onOpen={openDetail} onLeft={release} onRight={(g) => openChat(g.id)} leftIcon="💔" rightIcon="💬" empty="No ghost friends yet. Go swipe!" headerRight={<button className="btn small" onClick={resetAll}>Reset</button>} />;
@@ -136,8 +149,9 @@ export default function App() {
           onShortlist={() => toggle(setShortlist, detail.id)} onCompare={() => toggle(setCompare, detail.id, 3)} onIgnore={() => ignore(detail)} onBefriend={() => requestBefriend(detail)} onClose={() => setDetailId(null)} />
       )}
       {filterOpen && <FilterSheet filters={filters} setFilters={setFilters} locations={LOCATIONS} onClose={() => setFilterOpen(false)} />}
-      {approval && <ApprovalSheet g={approval} onCancel={() => setApproval(null)} onApprove={() => befriend(approval)} />}
+      {approval && <ApprovalSheet g={approval} onCancel={() => setApproval(null)} onApprove={() => tryBond(approval)} />}
       {match && <MatchOverlay g={match} onKeep={() => { setMatchId(null); setTab("home"); }} onMatches={() => { setMatchId(null); setTab("friends"); }} onChat={() => openChat(match.id)} />}
+      {fled && <FledOverlay g={fled} onKeep={() => { setFledId(null); setTab("home"); }} />}
     </div>
   );
 }

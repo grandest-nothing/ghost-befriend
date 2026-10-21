@@ -1,4 +1,5 @@
 import Pic from "./Pic.jsx";
+import { chancePct } from "../lib.js";
 import "../approval.css";
 
 // One-tap confirmation for high-risk ghosts: no checkbox, no typing.
@@ -20,12 +21,13 @@ export default function ApprovalSheet({ g, onCancel, onApprove }) {
           </div>
         </div>
         <ul className="ap-list">
+          <li>🍀 Bond chance: <b>{chancePct(g)}%</b></li>
           <li>😨 Fear level: <b>{g.fear}</b></li>
           <li>👤 Type: <b>{g.type}</b></li>
           {g.uncontrollable && <li>🎛️ Cannot be controlled once bonded</li>}
         </ul>
-        <p className="muted">High-risk ghosts need your OK before you bond.</p>
-        <button className="cta" onClick={onApprove}>Approve and befriend</button>
+        <p className="muted">Even with your OK, this ghost might run away.</p>
+        <button className="cta" onClick={onApprove}>Approve and try to befriend</button>
         <button className="linkbtn" onClick={onCancel}>Not now</button>
       </div>
     </div>

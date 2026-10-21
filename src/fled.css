@@ -1,0 +1,20 @@
+.fled { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; background: radial-gradient(circle at 50% 30%, #2a0f1a, #000 65%); animation: pop .3s ease; }
+.fled-art { position: relative; width: 210px; height: 210px; display: grid; place-items: center; font-size: 6rem; }
+.fled-art .pic:not(.emoji) { width: 100%; height: 100%; object-fit: contain; }
+.fled-art .pic { animation: fled-shake .45s ease-in-out, fled-away 1.2s ease-in .55s forwards; }
+@keyframes fled-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px) rotate(-4deg); } 40% { transform: translateX(10px) rotate(4deg); } 60% { transform: translateX(-8px); } 80% { transform: translateX(8px); } }
+@keyframes fled-away { to { transform: translateX(150%) scale(0.35); opacity: 0; } }
+.fled-puff { position: absolute; font-size: 2rem; opacity: 0; animation: fled-puff 1.3s ease-out .55s forwards; }
+.fled-puff.p1 { left: 6%; bottom: 18%; }
+.fled-puff.p2 { left: 22%; top: 36%; animation-delay: .75s; }
+@keyframes fled-puff { 0% { opacity: 0; transform: translateX(0) scale(.6); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50px) scale(1.5); } }
+.fled-kick { color: var(--bad); letter-spacing: .16em; font-weight: 800; font-size: .9rem; }
+.fled-title { font-size: 2rem; line-height: 1.1; }
+.fled-sub { color: #ddd; max-width: 290px; }
+.fled-odds { padding: 8px 14px; border-radius: 99px; background: #1f1c27; border: 1px solid var(--line); font-size: .9rem; }
+.fled .cta { margin-top: 10px; max-width: 320px; }
+
+.chip.chance { font-weight: 600; }
+.chip.chance.good { color: #34d399; }
+.chip.chance.mid { color: #fbbf24; }
+.chip.chance.low { color: #f87171; }
