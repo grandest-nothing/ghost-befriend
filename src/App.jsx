@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import "./glass.css";
 import { LOCATIONS } from "./data/ghosts.js";
 import { usePokemon } from "./pokemon.js";
 import { SORTS, REPLIES, greeting, isBeginner, isHighRisk } from "./lib.js";
 import Discover, { Details } from "./components/Discover.jsx";
 import Nearby from "./components/Nearby.jsx";
 import Compare from "./components/Compare.jsx";
+import { Icon } from "./components/TabIcons.jsx";
 import { Welcome, GhostGrid, Messages, Chat, MatchOverlay, Approval, FilterSheet } from "./components/Screens.jsx";
 
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
@@ -14,7 +16,7 @@ function usePersist(key, init) {
   return [v, setV];
 }
 
-const TABS = [["home", "⌂"], ["friends", "♡"], ["saved", "☆"], ["messages", "✉"], ["compare", "⇄"]];
+const TABS = [["home", "Home"], ["friends", "Matches"], ["saved", "Shortlist"], ["messages", "Messages"], ["compare", "Compare"]];
 
 export default function App() {
   const ghosts = usePokemon();
@@ -112,14 +114,18 @@ export default function App() {
   else if (tab === "messages") screen = <Messages friends={friends} chats={chats} unread={unread} onOpen={openChat} />;
   else screen = <Compare ghosts={ghosts} compare={compare} shortlist={shortlist} toggle={(id) => toggle(setCompare, id, 3)} onClear={() => setCompare([])} />;
 
+  const tabIndex = Math.max(0, TABS.findIndex(([k]) => k === tab));
+
   return (
     <div className="phone">
       <div className="screen">{screen}</div>
       {!chatId && (
-        <nav className="tabbar">
-          {TABS.map(([k, icon]) => (
-            <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)} aria-label={k}>
-              {icon}{k === "messages" && totalUnread > 0 && <i className="badge top">{totalUnread}</i>}
+        <nav className="tabbar" aria-label="Main">
+          <span className="glass-pill" style={{ transform: `translateX(${tabIndex * 100}%)` }} aria-hidden="true" />
+          {TABS.map(([k, name]) => (
+            <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)} aria-label={name} aria-current={tab === k ? "page" : undefined}>
+              <Icon name={k} />
+              {k === "messages" && totalUnread > 0 && <i className="badge top">{totalUnread}</i>}
             </button>
           ))}
         </nav>

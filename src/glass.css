@@ -1,0 +1,82 @@
+/* Liquid Glass floating tab bar. Selectors start with .phone so they win over styles.css. */
+
+.phone .tabbar {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 15; /* above page content, below Details (20), pop-ups (40+) */
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border: 0;
+  border-radius: 999px;
+  isolation: isolate;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* soft specular sheen across the top-left of the glass */
+.phone .tabbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 140% at 12% -20%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .phone .tabbar { background: rgba(32, 30, 40, 0.94); }
+}
+
+/* sliding glass capsule under the active tab (5 equal tabs) */
+.phone .glass-pill {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 6px;
+  width: calc((100% - 12px) / 5);
+  border-radius: 999px;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  -webkit-backdrop-filter: blur(8px) brightness(1.2);
+  backdrop-filter: blur(8px) brightness(1.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 4px 16px rgba(255, 45, 155, 0.28);
+  transition: transform 0.38s cubic-bezier(0.3, 1.35, 0.5, 1);
+}
+
+.phone .tabbar button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: 52px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: none;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.68);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.phone .tabbar button:active { transform: scale(0.92); }
+.phone .tabbar button.on { color: #fff; }
+.phone .tabbar button.on svg { fill: rgba(255, 255, 255, 0.2); filter: drop-shadow(0 0 6px rgba(255, 120, 190, 0.55)); }
+.phone .tabbar button.on::before { display: none; }
+.phone .tabbar .badge.top { top: 6px; right: calc(50% - 22px); }
+
+/* the bar now floats over the content, so give each screen room at the bottom */
+.phone .page { padding-bottom: 108px; }
+.phone .nearby { padding-bottom: 112px; }
+.phone .stage { padding-bottom: 84px; }
