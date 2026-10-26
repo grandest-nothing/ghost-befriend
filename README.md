@@ -1,5 +1,3 @@
-# 👻 Ghost Befriend
-
 <h3 align="center">
   <a href="https://ghost-befriend.vercel.app">👻 Ghost Befriend</a>
 </h3>
